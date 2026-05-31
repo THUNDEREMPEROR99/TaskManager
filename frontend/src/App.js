@@ -18,7 +18,7 @@ function App() {
       return;
     }
 
-    await axios.post("http://localhost:5000/tasks", {
+    await axios.post("https://taskmanager-backend-nqjs.onrender.com", {
       title,
       dueDate,
       priority,
@@ -32,12 +32,12 @@ function App() {
   };
 
   const toggleComplete = async (id) => {
-    await axios.put(`http://localhost:5000/tasks/${id}`);
+    await axios.put(`https://taskmanager-backend-nqjs.onrender.com${id}`);
     fetchTasks();
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/tasks/${id}`);
+    await axios.delete(`https://taskmanager-backend-nqjs.onrender.com${id}`);
     fetchTasks();
   };
 
