@@ -3,6 +3,12 @@ pipeline {
 
     stages {
         stage('Backend Dependencies') {
+            agent {
+                docker {
+                    image 'node:18'
+                    args '-u root'
+                }
+            }
             steps {
                 dir('backend') {
                     sh 'npm install'
@@ -11,6 +17,12 @@ pipeline {
         }
 
         stage('Frontend Dependencies') {
+            agent {
+                docker {
+                    image 'node:18'
+                    args '-u root'
+                }
+            }
             steps {
                 dir('frontend') {
                     sh 'npm install'
