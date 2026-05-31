@@ -1,15 +1,7 @@
 pipeline {
-
     agent any
 
     stages {
-
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/THUNDEREMPEROR99/TaskManager.git'
-            }
-        }
-
         stage('Backend Dependencies') {
             steps {
                 dir('backend') {
@@ -37,6 +29,5 @@ pipeline {
                 sh 'docker build -t task-manager-frontend ./frontend'
             }
         }
-
     }
 }
