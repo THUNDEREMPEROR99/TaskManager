@@ -8,7 +8,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
 
   const fetchTasks = async () => {
-    const res = await axios.get("https://taskmanager-backend-nqjs.onrender.com");
+    const res = await axios.get("https://taskmanager-backend-nqjs.onrender.com/tasks");
     setTasks(res.data);
   };
 
@@ -18,7 +18,7 @@ function App() {
       return;
     }
 
-    await axios.post("https://taskmanager-backend-nqjs.onrender.com", {
+    await axios.post("https://taskmanager-backend-nqjs.onrender.com/tasks", {
       title,
       dueDate,
       priority,
@@ -32,12 +32,12 @@ function App() {
   };
 
   const toggleComplete = async (id) => {
-    await axios.put(`https://taskmanager-backend-nqjs.onrender.com${id}`);
+    await axios.put(`https://taskmanager-backend-nqjs.onrender.com/tasks/${id}`);
     fetchTasks();
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`https://taskmanager-backend-nqjs.onrender.com${id}`);
+    await axios.delete(`https://taskmanager-backend-nqjs.onrender.com/tasks/${id}`);
     fetchTasks();
   };
 
