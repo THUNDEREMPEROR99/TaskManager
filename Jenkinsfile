@@ -18,15 +18,9 @@ pipeline {
             }
         }
 
-        stage('Build Frontend Docker Image') {
-            steps {
-                sh 'docker build -t task-manager-frontend ./frontend'
-            }
-        }
-
-        stage('Trivy Scan Backend') {
+        stage('Trivy File System Scan') {
     	    steps {
-        sh 'trivy image --scanners vuln --skip-db-update task-manager-backend || true'
+        	sh 'trivy fs --scanners vuln,secret,misconfig . || true'
     	    }
 	}
 
