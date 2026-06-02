@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_USER = "akankshmahesh"
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
@@ -8,35 +12,50 @@ pipeline {
             }
         }
 
-        stage('Backend Build Check') {
+        stage('Build Backend Docker Image') {
             steps {
-                dir('backend') {
-                    sh 'ls'
-                    echo 'Backend files verified successfully'
+                sh 'docker build -t task-manager-backend ./backend'
+            }
+        }
+
+        stage('Build Frontend Docker Image') {
+            steps {
+                sh 'docker build -t task-manager-frontend ./frontend'
+            }
+        }
+
+        stage('Trivy Scan Backend') {
+            steps {
+                sh 'trivy image task-manager-backend'
+            }
+        }
+
+        stage('Trivy Scan Frontend') {
+            steps {
+                sh 'trivy image task-manager-frontend'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
                 }
             }
         }
 
-        stage('Frontend Build Check') {
+        stage('Tag and Push Images') {
             steps {
-                dir('frontend') {
-                    sh 'ls'
-                    echo 'Frontend files verified successfully'
-                }
-            }
-        }
-
-        stage('Dockerfile Verification') {
-            steps {
-                sh 'test -f backend/Dockerfile'
-                sh 'test -f frontend/Dockerfile'
-                echo 'Dockerfiles verified successfully'
+                sh 'docker tag task-manager-backend $DOCKER_USER/task-manager-backend:v1'
+                sh 'docker tag task-manager-frontend $DOCKER_USER/task-manager-frontend:v1'
+                sh 'docker push $DOCKER_USER/task-manager-backend:v1'
+                sh 'docker push $DOCKER_USER/task-manager-frontend:v1'
             }
         }
 
         stage('Pipeline Completed') {
             steps {
-                echo 'CI pipeline executed successfully'
+                echo 'CI/CD pipeline executed successfully'
             }
         }
     }
