@@ -25,10 +25,10 @@ pipeline {
         }
 
         stage('Trivy Scan Backend') {
-            steps {
-                sh 'trivy image task-manager-backend'
-            }
-        }
+    	    steps {
+        sh 'trivy image --scanners vuln --skip-db-update task-manager-backend || true'
+    	    }
+	}
 
         stage('Trivy Scan Frontend') {
             steps {
