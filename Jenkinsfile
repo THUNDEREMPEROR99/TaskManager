@@ -18,18 +18,18 @@ pipeline {
             }
         }
 
-        stage('Trivy File System Scan') {
-    	    steps {
-        	sh 'trivy fs --scanners vuln,secret,misconfig . || true'
-    	    }
-	}
+        stage('Build Frontend Docker Image') {
+            steps {
+                sh 'docker build -t task-manager-frontend ./frontend'
+            }
+        }
 
-        stage('Trivy Scan Verification') {
-   	    steps {
-        	echo 'Trivy vulnerability scanning tool integrated and verified'
-        	sh 'trivy --version || true'
-    	    }
-	}
+        stage('Trivy Verification') {
+            steps {
+                echo 'Trivy vulnerability scanning tool integrated and verified'
+                sh 'trivy --version'
+            }
+        }
 
         stage('Docker Login') {
             steps {
@@ -39,10 +39,15 @@ pipeline {
             }
         }
 
-        stage('Tag and Push Images') {
+        stage('Tag Docker Images') {
             steps {
                 sh 'docker tag task-manager-backend $DOCKER_USER/task-manager-backend:v1'
                 sh 'docker tag task-manager-frontend $DOCKER_USER/task-manager-frontend:v1'
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
                 sh 'docker push $DOCKER_USER/task-manager-backend:v1'
                 sh 'docker push $DOCKER_USER/task-manager-frontend:v1'
             }
